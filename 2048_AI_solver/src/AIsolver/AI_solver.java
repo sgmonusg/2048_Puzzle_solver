@@ -54,22 +54,33 @@ public class AI_solver {
 				if (moves.isEmpty()){
 					bestScore=0;
 				}
-				int[] possibleVlaues ={2,4};
+				int[] possibleValues ={2,4};
 				int i,j;
 				int [][] boardArray;
 				for(Integer cellId : moves){
 					i=cellId/Board.BOARD_SIZE;
 					j=cellId%Board.BOARD_SIZE;
 					
+					
+					for(int value : possibleValues){
+						Board newBoard =(Board) theBoard.clone();
+						newBoard.setEmptyCell(i,j,value);
+						Map<String , Object > currentResult = minimax(newBoard, depth-1,Player.USER);
+						int currentScore=((Number)currentResult.get("Score")).intValue();
+						
+						if(currentScore>bestScore){
+							bestScore=currentScore;
+						}
+					}
 				}
 			}
 		}
-		
+		result.put("Score",bestScore);
+		result.put("Direction",bestDirection);
 		// TODO Auto-generated method stub
-		return null;
+		return result;
 	}
-	private static int heuristicScore(Object score, Object numberOfEmptyCells,
-			Object calculateClusteringScore) {
+	private static int heuristicScore(Object score, Object numberOfEmptyCells, Object calculateClusteringScore) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -40,6 +40,11 @@ public class Board {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void setEmptyCell(int i, int j, int value) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }
