@@ -9,9 +9,12 @@ import dataobject.Direction;
 public class Board implements Cloneable {
 
 	public static final Integer BOARD_SIZE = 4;
+	private static final int TARGET_POINTS = 2048;
+	private static final int MINIMUM_WIN_SCORE = 18432;
 	private int[][] boardArray;
 	private final Random randomGenerator;
 	private int cache_emptyCells =(Integer) null;
+	private int score=0;
 	
 	public Board(){
 		boardArray =new int[BOARD_SIZE][BOARD_SIZE];
@@ -20,21 +23,47 @@ public class Board implements Cloneable {
 		addRandomCell();
 	}
 
-	private void addRandomCell() {
+	private boolean addRandomCell() {
 		// TODO Auto-generated method stub
+		List<Integer> emptyCells =getEmptyCellIds();
+		int listSize =emptyCells.size();
+		if(listSize==0){
+			return false;
+		}
+		
+		int randomCellId =emptyCells.get(randomGenerator.nextInt(listSize));
+		int randomValue=(randomGenerator.nextDouble()<0.9)?2:4;
+		int i=randomCellId/BOARD_SIZE;
+		int j=randomCellId%BOARD_SIZE;
+		setEmptyCell(i,j,randomValue);
+		return true;
+		
 		
 	}
+	
+	public int getScore(){
+		return score;
+	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Board copy= (Board)super.clone();
 		copy.boardArray =clone2dArray(boardArray);
 		return copy;
 		
 	}
-	private int[][] clone2dArray(Object boardArray2) {
+	
+	private int[][] clone2dArray(int[][] currboardArray) {
+		int[][] copy =new int[currboardArray.length][];
+		for(int i=0;i<currboardArray.length;i++){
+			copy[i]=currboardArray[i].clone();
+		}
+		return copy;
+		
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
+	
 	public boolean isGameTerminated() throws CloneNotSupportedException {
 		boolean terminated =false;
 		if(hasWon()==true){
@@ -56,15 +85,20 @@ public class Board implements Cloneable {
 	}
 
 	public boolean hasWon() {
-		
+		if(score <MINIMUM_WIN_SCORE){
+			return false;
+		}
+		for(int i=0;i<BOARD_SIZE;i++){
+			for(int j=0;j<BOARD_SIZE;j++){
+				if(boardArray[i][j]>=TARGET_POINTS){
+					return true;
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public Object getScore() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public int getNumberOfEmptyCells() {
 		if(cache_emptyCells==(Integer) null){
@@ -82,13 +116,48 @@ public class Board implements Cloneable {
 	}
 
 	public int move(Direction direction) {
+		int point=0;
+		if(direction==Direction.UP){
+			rotateLeft();
+			
+		}
+		else if(direction==Direction.RIGHT){
+			rotateLeft();
+			rotateLeft();
+		}
+		else if(direction==Direction.DOWN){
+			rotateRight();
+			
+		}
+		
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public boolean isEqual(Object boardArray, Object boardArray2) {
+	private void rotateRight() {
 		// TODO Auto-generated method stub
-		return false;
+		
+	}
+
+	private void rotateLeft() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isEqual(int[][] currboardArray, int[][] newboardArray) {
+		
+		Boolean equal =true;
+		
+		for(int i=0;i<currboardArray.length;i++){
+			for(int j=0;j<newboardArray.length;j++){
+				if(currboardArray[i][j]!=newboardArray[i][j]){
+					equal=false;
+					return equal;
+				}
+			}
+		}
+		// TODO Auto-generated method stub
+		return equal;
 	}
 
 	public java.util.List<Integer> getEmptyCellIds() {
@@ -106,9 +175,12 @@ public class Board implements Cloneable {
 		return null;
 	}
 
-	public void setEmptyCell(int i, int j, int value) {
+	public void setEmptyCell(int i, int j, int value){
+		if (boardArray[i][j]==0){
+			boardArray[i][j]=value;
+			cache_emptyCells=(Integer) null;
+		}
 		// TODO Auto-generated method stub
-		
 	}
 
 	public Random getRandomGenerator() {
