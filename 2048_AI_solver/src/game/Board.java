@@ -129,17 +129,70 @@ public class Board implements Cloneable {
 			rotateRight();
 			
 		}
+		for(int i=0;i<BOARD_SIZE;i++){
+			int lastMergePostion=0;
+			for(int j=1;j<BOARD_SIZE;j++){
+				if(boardArray[i][j]==0){
+					continue;
+				}
+				int previousPostion=j-1;
+				while(previousPostion>lastMergePostion&& boardArray[i][previousPostion]==0){
+					previousPostion--;
+				}
+				if(previousPostion==j){
+					//nothing can be done
+				}
+				else if(boardArray[i][previousPostion]==0){
+					boardArray[i][previousPostion]=boardArray[i][j];
+					boardArray[i][j]=0;
+				}
+				else if(boardArray[i][previousPostion]==boardArray[i][j]){
+					boardArray[i][j]=0;
+					boardArray[i][previousPostion]*=2;
+					point =point + boardArray[i][previousPostion];
+					lastMergePostion=previousPostion+1;
+				}
+				else if(boardArray[i][j]!=boardArray[i][previousPostion]&&previousPostion!=j-1){
+					boardArray[i][previousPostion+1]=boardArray[i][j];
+					boardArray[i][j]=0;
+				}
+			}
+		}
+		score =score+point;
+		//reverse the direction in which it was rotated
+		if(direction==Direction.DOWN){
+			rotateLeft();
+		}
+		else if(direction==Direction.RIGHT){
+			rotateLeft();
+			rotateLeft();
+		}
+		else if(direction==Direction.UP){
+			rotateLeft();
+		}
 		
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	private void rotateRight() {
+		int[][] newBoard= new int[BOARD_SIZE][BOARD_SIZE];
+		for(int i=0;i<BOARD_SIZE;i++){
+			for(int j=0;j<BOARD_SIZE;j++){
+				newBoard[BOARD_SIZE-j-1][i]=boardArray[i][j];
+			}
+		}
 		// TODO Auto-generated method stub
 		
 	}
 
 	private void rotateLeft() {
+		int[][] newBoard= new int[BOARD_SIZE][BOARD_SIZE];
+		for(int i=0;i<BOARD_SIZE;i++){
+			for(int j=0;j<BOARD_SIZE;j++){
+				newBoard[i][j]=boardArray[BOARD_SIZE-j-1][i];
+			}
+		}
 		// TODO Auto-generated method stub
 		
 	}
